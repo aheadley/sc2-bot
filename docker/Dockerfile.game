@@ -1,0 +1,26 @@
+FROM frolvlad/alpine-glibc
+
+ARG GAME_VERSION=3.17
+ENV GAME_VERSION ${GAME_VERSION:-3.17}
+
+ARG GAME_PORT=12000
+ENV GAME_PORT ${GAME_PORT:-12000}
+
+ARG GAME_DATA_VERSION=56787
+ENV GAME_DATA_VERSION ${GAME_DATA_VERSION:-56787}
+
+RUN apk update && \
+    apk add \
+        bash unzip wget libstdc++
+
+COPY fetch-data.sh /root/fetch-data.sh
+RUN /root/fetch-data.sh ${GAME_VERSION} /opt/
+
+EXPOSE ${GAME_PORT}
+
+WORKDIR /opt/StarCraftII
+ENTRYPOINT exec /opt/StarCraftII/Versions/Base${GAME_DATA_VERSION}/SC2_x64 \
+    -dataDir "/opt/StarCraftII/" \
+    -listen "0.0.0.0" \
+    -port "${GAME_PORT}" \
+    -verbose
