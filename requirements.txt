@@ -1,0 +1,1 @@
+git+git@github.com:aheadley/python-sc2.git@updates#egg=sc2
