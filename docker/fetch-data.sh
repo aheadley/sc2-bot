@@ -10,6 +10,7 @@ DEST="$2"
 DATA_URL_BASE="http://blzdistsc2-a.akamaihd.net"
 CLIENT_FILE="Linux/SC2.${GAME_VERSION}.zip"
 MAP_FILES=( "MapPacks/Ladder2017Season1.zip" "MapPacks/Ladder2017Season2.zip" "MapPacks/Ladder2017Season3.zip" "MapPacks/Melee.zip" )
+REPLAY_FILES=( "ReplayPacks/3.16.1-Pack_1-fix.zip" "ReplayPacks/3.16.1-Pack_2.zip" )
 DATA_PASSWORD='iagreetotheeula'
 MAP_DEST="StarCraftII/Maps"
 

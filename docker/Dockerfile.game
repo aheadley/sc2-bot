@@ -9,18 +9,23 @@ ENV GAME_PORT ${GAME_PORT:-12000}
 ARG GAME_DATA_VERSION=56787
 ENV GAME_DATA_VERSION ${GAME_DATA_VERSION:-56787}
 
-RUN apk update && \
-    apk add \
-        bash unzip wget libstdc++
-
-COPY fetch-data.sh /root/fetch-data.sh
-RUN /root/fetch-data.sh ${GAME_VERSION} /opt/
+ENV GAME_HOME ${GAME_HOME:-/home/sc2}
 
 EXPOSE ${GAME_PORT}
 
-WORKDIR /opt/StarCraftII
-ENTRYPOINT exec /opt/StarCraftII/Versions/Base${GAME_DATA_VERSION}/SC2_x64 \
-    -dataDir "/opt/StarCraftII/" \
+RUN apk update && \
+    apk add \
+        bash unzip wget libstdc++ && \
+    adduser -D sc2
+
+USER sc2
+
+COPY fetch-data.sh ${GAME_HOME}/fetch-data.sh
+RUN ${GAME_HOME}/fetch-data.sh ${GAME_VERSION} ${GAME_HOME}
+
+WORKDIR ${GAME_HOME}/StarCraftII
+ENTRYPOINT exec ${GAME_HOME}/StarCraftII/Versions/Base${GAME_DATA_VERSION}/SC2_x64 \
+    -dataDir "${GAME_HOME}/StarCraftII/" \
     -listen "0.0.0.0" \
     -port "${GAME_PORT}" \
     -verbose
