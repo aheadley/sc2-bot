@@ -1,21 +1,23 @@
 FROM frolvlad/alpine-glibc
 
-ARG GAME_VERSION=3.17
-ENV GAME_VERSION ${GAME_VERSION:-3.17}
+ARG GAME_VERSION=4.0.2
+ENV GAME_VERSION ${GAME_VERSION:-4.0.2}
 
 ARG GAME_PORT=12000
 ENV GAME_PORT ${GAME_PORT:-12000}
 
-ARG GAME_DATA_VERSION=56787
-ENV GAME_DATA_VERSION ${GAME_DATA_VERSION:-56787}
+ARG GAME_DATA_VERSION=59877
+ENV GAME_DATA_VERSION ${GAME_DATA_VERSION:-59877}
 
 ENV GAME_HOME ${GAME_HOME:-/home/sc2}
+
+ENV LINUX_USE_SOFTWARE_RENDER 1
 
 EXPOSE ${GAME_PORT}
 
 RUN apk update && \
     apk add \
-        bash unzip wget libstdc++ && \
+        bash unzip wget libstdc++ mesa-osmesa llvm4 && \
     adduser -D sc2
 
 USER sc2
@@ -26,6 +28,6 @@ RUN ${GAME_HOME}/fetch-data.sh ${GAME_VERSION} ${GAME_HOME}
 WORKDIR ${GAME_HOME}/StarCraftII
 ENTRYPOINT exec ${GAME_HOME}/StarCraftII/Versions/Base${GAME_DATA_VERSION}/SC2_x64 \
     -dataDir "${GAME_HOME}/StarCraftII/" \
+    -osmesapath "/usr/lib/libOSMesa.so.8" \
     -listen "0.0.0.0" \
-    -port "${GAME_PORT}" \
-    -verbose
+    -port "${GAME_PORT}"

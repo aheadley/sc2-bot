@@ -18,7 +18,7 @@ mkdir -p "${DEST}/${MAP_DEST}"
 
 # we fetch and unpack the maps first, then skip the whole bit if the client
 # unpack completed successfully
-if ! [ -f "${DEST}/StarCraftII/Versions/Base56787/SC2_x64" ]; then
+if ! [ -d "${DEST}/StarCraftII/Versions" ]; then
     for fn in "${MAP_FILES[@]}"; do
         wget --timestamping --continue -qO "/tmp/$(basename ${fn})" "${DATA_URL_BASE}/${fn}"
         unzip -n -P "${DATA_PASSWORD}" -d "${DEST}/${MAP_DEST}" "/tmp/$(basename ${fn})"
@@ -29,6 +29,9 @@ if ! [ -f "${DEST}/StarCraftII/Versions/Base56787/SC2_x64" ]; then
     unzip -n -P "${DATA_PASSWORD}" -d "${DEST}" "/tmp/$(basename ${CLIENT_FILE})"
     rm -f "/tmp/$(basename ${CLIENT_FILE})"
 fi
+
+# SC2 looks in maps/ instead of Maps/ for some insane reason
+ln -s "Maps" "${DEST}/StarCraftII/maps"
 
 find "${DEST}/StarCraftII" -type d | xargs chmod 755
 find "${DEST}/StarCraftII" -type f | xargs chmod 644
